@@ -5,7 +5,7 @@ export const router = createHttpRouter();
 
 router.addDefaultHandler(async ({ request, log, json }) => {
     const {
-        userData: { searchKeyword },
+        userData: { searchString },
     } = request;
 
     if (!json || !json?.images || !json?.images?.length) return log.error(`Couldn't generate images`);
@@ -13,7 +13,7 @@ router.addDefaultHandler(async ({ request, log, json }) => {
     const { images } = json;
 
     log.info(
-        `Successfully generated ${images.length} images for ${searchKeyword}`
+        `Successfully generated ${images.length} images for ${searchString}`
     );
 
     const keyValueStore = await KeyValueStore.open("craiyon");
@@ -29,6 +29,6 @@ router.addDefaultHandler(async ({ request, log, json }) => {
 
         const imageUrl = `https://api.apify.com/v2/key-value-stores/${keyValueStore.id}/records/${key}`;
 
-        await dataset.pushData({ searchKeyword, imageUrl });
+        await dataset.pushData({ searchString, imageUrl });
     }
 });

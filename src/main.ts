@@ -8,11 +8,11 @@ await Actor.init();
 
 interface InputSchema {
 	debug?: boolean;
-	searchKeywords: string[];
+	searchStrings: string[];
 }
 
-const { debug, searchKeywords } =
-	(await KeyValueStore.getInput<InputSchema>()) ?? { searchKeywords: [] };
+const { debug, searchStrings } =
+	(await KeyValueStore.getInput<InputSchema>()) ?? { searchStrings: [] };
 
 if (debug) {
 	log.setLevel(log.LEVELS.DEBUG);
@@ -42,16 +42,16 @@ const crawler = new HttpCrawler({
 });
 
 await crawler.run(
-	searchKeywords.map(searchKeyword => ({
+	searchStrings.map(searchString => ({
 		url: "https://backend.craiyon.com/generate",
 		method: "POST",
-		payload: JSON.stringify({ prompt: searchKeyword.toLowerCase() }),
+		payload: JSON.stringify({ prompt: searchString.toLowerCase() }),
         headers: {
             "content-type":"application/json",
         },
         useExtendedUniqueKey: true,
         userData: {
-            searchKeyword
+            searchString
         }
 	}))
 );

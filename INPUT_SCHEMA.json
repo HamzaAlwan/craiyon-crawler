@@ -1,0 +1,18 @@
+{
+    "title": "Craiyon images crawler input",
+    "description": "Text which you would Craiyon to generate images for, like `Cats`, `Wood buildings`",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "searchStrings": {
+            "title": "Search Text",
+            "type": "array",
+            "description": "Enter a text of what images you would like Craiyon to generate, you can add multiple values.",
+            "prefill": [
+                { "search": "Cute cats" }
+            ],
+            "editor": "stringList"
+        }
+    },
+    "required": ["searchStrings"]
+}
