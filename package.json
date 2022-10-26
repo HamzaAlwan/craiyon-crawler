@@ -1,0 +1,27 @@
+{
+    "name": "craiyon-crawler",
+    "version": "0.0.1",
+    "type": "module",
+    "description": "Craiyon images generator",
+    "dependencies": {
+        "apify": "^3.1.0",
+        "crawlee": "^3.1.0",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@apify/tsconfig": "^0.1.0",
+        "@types/node": "^18.11.5",
+        "@types/uuid": "^8.3.4",
+        "ts-node": "^10.8.0",
+        "typescript": "4.7.4"
+    },
+    "scripts": {
+        "start": "npm run start:dev",
+        "start:prod": "node dist/main.js",
+        "start:dev": "ts-node-esm -T src/main.ts",
+        "build": "tsc",
+        "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+    },
+    "author": "It's not you it's me",
+    "license": "ISC"
+}

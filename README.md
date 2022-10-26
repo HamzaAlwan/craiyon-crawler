@@ -6,3 +6,4 @@ If you're looking for examples or want to learn more visit:
 
 - [Documentation](https://crawlee.dev/api/http-crawler/class/HttpCrawler)
 - [Examples](https://crawlee.dev/docs/examples/http-crawler)
+git
