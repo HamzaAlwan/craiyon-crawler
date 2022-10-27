@@ -4,20 +4,17 @@ import { v4 as uuid } from "uuid";
 export const router = createHttpRouter();
 
 router.addDefaultHandler(async ({ request, log, json }) => {
-    const {
-        userData: { searchString },
-    } = request;
+    const { userData: { searchString } } = request;
 
-    if (!json || !json?.images || !json?.images?.length) return log.error(`Couldn't generate images`);
+    if (!json || !json?.images || !json?.images?.length) {
+        throw new Error (`Couldn't generate images`);
+    }
 
     const { images } = json;
 
-    log.info(
-        `Successfully generated ${images.length} images for ${searchString}`
-    );
+    log.info(`Successfully generated ${images.length} images for ${searchString}`);
 
-    const keyValueStore = await KeyValueStore.open("craiyon");
-    const dataset = await Dataset.open("craiyon");
+    const keyValueStore = await KeyValueStore.open();
 
     for (const image of images) {
         const key = uuid();
@@ -29,6 +26,6 @@ router.addDefaultHandler(async ({ request, log, json }) => {
 
         const imageUrl = `https://api.apify.com/v2/key-value-stores/${keyValueStore.id}/records/${key}`;
 
-        await dataset.pushData({ searchString, imageUrl });
+        await Dataset.pushData({ searchString, imageUrl });
     }
 });
