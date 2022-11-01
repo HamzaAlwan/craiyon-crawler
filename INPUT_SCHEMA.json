@@ -8,10 +8,10 @@
             "title": "Search Text",
             "type": "array",
             "description": "Enter a text of what images you would like Craiyon to generate, you can add multiple values.",
-            "prefill": [
-                { "search": "Cute cats" }
-            ],
-            "editor": "stringList"
+            "prefill": [ "Wood Sword"],
+            "editor": "stringList",
+            "uniqueItems": true,
+            "minItems": 1
         }
     },
     "required": ["searchStrings"]

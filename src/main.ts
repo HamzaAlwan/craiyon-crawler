@@ -7,48 +7,63 @@ import { router } from "./routes.js";
 await Actor.init();
 
 interface InputSchema {
-	debug?: boolean;
-	searchStrings: string[];
+    debug?: boolean;
+    searchStrings: string[];
 }
 
-const { debug, searchStrings } = (await KeyValueStore.getInput<InputSchema>()) ?? { searchStrings: [] };
+let debug, searchStrings;
+
+const input = await KeyValueStore.getInput<InputSchema>();
+
+debug = input?.debug;
+searchStrings = input?.searchStrings;
+
+// Get input from Apify console
+if (!searchStrings) {
+    const input = await Actor.getInput<InputSchema>();
+
+    debug = input?.debug;
+    searchStrings = input?.searchStrings;
+}
 
 if (!(Array.isArray(searchStrings) && searchStrings.length > 0)) {
     throw new Error('Wrong INPUT: searchStrings has to be an array with at least one text');
 }
 
 if (debug) {
-	log.setLevel(log.LEVELS.DEBUG);
+    log.setLevel(log.LEVELS.DEBUG);
 }
 
 const proxyConfiguration = await Actor.createProxyConfiguration({
-	useApifyProxy: true,
+    useApifyProxy: true,
 });
 
 const crawler = new HttpCrawler({
-	proxyConfiguration,
-    navigationTimeoutSecs: 60 * 5, // Takes a while for the images to generate
-	requestHandler: router,
-	errorHandler: async ({ response }) => {
-		log.error(
-			`Response status is: ${response?.statusCode} msg: ${response?.statusMessage}`
-		);
-	},
+    proxyConfiguration,
+    navigationTimeoutSecs: 60 * 5, // Takes a while to generate images
+    requestHandler: router,
+    errorHandler: async ({ response }) => {
+        log.error(`Response status is: ${response?.statusCode} msg: ${response?.statusMessage}`);
+    },
 });
 
 await crawler.run(
-	searchStrings.map(searchString => ({
-		url: "https://backend.craiyon.com/generate",
-		method: "POST",
-		payload: JSON.stringify({ prompt: searchString.toLowerCase() }),
-        headers: {
-            "content-type":"application/json",
-        },
-        useExtendedUniqueKey: true,
-        userData: {
-            searchString
+    searchStrings.map(searchString => {
+        log.info(`Generating images for ${searchString}...`);
+
+        return {
+            url: "https://backend.craiyon.com/generate",
+            method: "POST",
+            payload: JSON.stringify({ prompt: searchString.toLowerCase() }),
+            headers: {
+                "content-type": "application/json",
+            },
+            useExtendedUniqueKey: true,
+            userData: {
+                searchString
+            }
         }
-	}))
+    })
 );
 
 await Actor.exit();
